@@ -1095,20 +1095,41 @@ async def txt_handler(bot: Client, m: Message):
                 url = mpd
                 keys_string = " ".join([f"--key {key}" for key in keys])
 
-            elif "classplusapp" in url:
-                signed_api = f"https://cpapi-ytas.onrender.com/extract_keys?url={url}@bots_updatee&user_id={user_id}"
+            elif "classplusapp" in url and url.endswith(".m3u8"):
                 try:
-                    response = requests.get(signed_api, timeout=20)
-                    data = response.json()
+                    headers = {
+                        'host': 'api.classplusapp.com',
+                        'x-access-token': cptoken,  # already defined earlier in /drm
+                        'accept-language': 'EN',
+                        'api-version': '18',
+                        'app-version': '1.4.73.2',
+                        'build-number': '35',
+                        'connection': 'Keep-Alive',
+                        'content-type': 'application/json',
+                        'device-details': 'Xiaomi_Redmi 7_SDK-32',
+                        'device-id': 'c28d3cb16bbdac01',
+                        'region': 'IN',
+                        'user-agent': 'Mobile-Android',
+                        'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c',
+                        'accept-encoding': 'gzip'
+                    }
+                    params = {"url": requests.utils.unquote(url)}
+            
+                    r = requests.get(
+                        'https://api.classplusapp.com/cams/uploader/video/jw-signed-url',
+                        headers=headers,
+                        params=params,
+                        timeout=20
+                    )
+                    r.raise_for_status()
+                    data = r.json()
                     if "url" in data:
-                        url = data["url"]  # signed m3u8
-                    elif "mpd" in data:
-                        url = data["mpd"]  # if API returns mpd
+                        url = data["url"]  # signed m3u8 URL
                     else:
-                        await m.reply_text(f"⚠️ No valid signed link returned for {url}")
+                        await m.reply_text(f"⚠ No signed URL in API response for {url}")
                         continue
                 except Exception as e:
-                    await m.reply_text(f"⚠️ Error parsing Classplus API: {e}")
+                    await m.reply_text(f"⚠ Error fetching signed Classplus URL: {e}")
                     continue
   
                     
