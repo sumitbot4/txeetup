@@ -1480,10 +1480,23 @@ async def text_handler(bot: Client, m: Message):
                 keys_string = " ".join([f"--key {key}" for key in keys])
 
             elif "classplusapp" in url:
-                signed_api = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={user_id}"
-                response = requests.get(signed_api, timeout=20)
-                #url = response.text.strip()
-                url = response.json()['url']  
+                signed_api = f"https://cpapi-ytas.onrender.com/extract_keys?url={url}@bots_updatee&user_id={user_id}"
+                try:
+                    response = requests.get(signed_api, timeout=20)
+                    try:
+                        data = response.json()
+                        if "url" in data:
+                            url = data["url"]
+                        elif "mpd" in data:
+                            url = data["mpd"]
+                        else:
+                            raise ValueError("JSON did not contain 'url' or 'mpd'")
+                    except Exception:
+                        # Fallback: treat response body as the signed link
+                        url = response.text.strip()
+                except Exception as e:
+                    await m.reply_text(f"⚠ Error fetching signed Classplus URL: {e}")
+                    continue  
 
             elif "tencdn.classplusapp" in url:
                 headers = {'host': 'api.classplusapp.com', 'x-access-token': f'{raw_text4}', 'accept-language': 'EN', 'api-version': '18', 'app-version': '1.4.73.2', 'build-number': '35', 'connection': 'Keep-Alive', 'content-type': 'application/json', 'device-details': 'Xiaomi_Redmi 7_SDK-32', 'device-id': 'c28d3cb16bbdac01', 'region': 'IN', 'user-agent': 'Mobile-Android', 'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c', 'accept-encoding': 'gzip'}
