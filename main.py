@@ -997,7 +997,7 @@ async def txt_handler(bot: Client, m: Message):
 
     if raw_text4 == '/d':
         cwtoken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MjQyMzg3OTEsImNvbiI6eyJpc0FkbWluIjpmYWxzZSwiYXVzZXIiOiJVMFZ6TkdGU2NuQlZjR3h5TkZwV09FYzBURGxOZHowOSIsImlkIjoiZEUxbmNuZFBNblJqVEROVmFWTlFWbXhRTkhoS2R6MDkiLCJmaXJzdF9uYW1lIjoiYVcxV05ITjVSemR6Vm10ak1WUlBSRkF5ZVNzM1VUMDkiLCJlbWFpbCI6Ik5Ga3hNVWhxUXpRNFJ6VlhiR0ppWTJoUk0wMVdNR0pVTlU5clJXSkRWbXRMTTBSU2FHRnhURTFTUlQwPSIsInBob25lIjoiVUhVMFZrOWFTbmQ1ZVcwd1pqUTViRzVSYVc5aGR6MDkiLCJhdmF0YXIiOiJLM1ZzY1M4elMwcDBRbmxrYms4M1JEbHZla05pVVQwOSIsInJlZmVycmFsX2NvZGUiOiJOalZFYzBkM1IyNTBSM3B3VUZWbVRtbHFRVXAwVVQwOSIsImRldmljZV90eXBlIjoiYW5kcm9pZCIsImRldmljZV92ZXJzaW9uIjoiUShBbmRyb2lkIDEwLjApIiwiZGV2aWNlX21vZGVsIjoiU2Ftc3VuZyBTTS1TOTE4QiIsInJlbW90ZV9hZGRyIjoiNTQuMjI2LjI1NS4xNjMsIDU0LjIyNi4yNTUuMTYzIn19.snDdd-PbaoC42OUhn5SJaEGxq0VzfdzO49WTmYgTx8ra_Lz66GySZykpd2SxIZCnrKR6-R10F5sUSrKATv1CDk9ruj_ltCjEkcRq8mAqAytDcEBp72-W0Z7DtGi8LdnY7Vd9Kpaf499P-y3-godolS_7ixClcYOnWxe2nSVD5C9c5HkyisrHTvf6NFAuQC_FD3TzByldbPVKK0ag1UnHRavX8MtttjshnRhv5gJs5DQWj4Ir_dkMcJ4JaVZO3z8j0OxVLjnmuaRBujT-1pavsr1CCzjTbAcBvdjUfvzEhObWfA1-Vl5Y4bUgRHhl1U-0hne4-5fF0aouyu71Y6W0eg'
-        cptoken = "cptoken"
+        cptoken = "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6MTI3NTQ3ODA4LCJvcmdJZCI6NzY4Nzg0LCJ0eXBlIjoxLCJtb2JpbGUiOiI5MTYyMDcyMTY5NzkiLCJuYW1lIjoiU3VtaXQiLCJlbWFpbCI6ImM4ZWRmYmZlZDZiYzQ2Y2ZhZDhhOWQzODZiMmNlZGU5QGdtYWlsLmNvbSIsImlzRmlyc3RMb2dpbiI6dHJ1ZSwiZGVmYXVsdExhbmd1YWdlIjoiRU4iLCJjb3VudHJ5Q29kZSI6IklOIiwiaXNJbnRlcm5hdGlvbmFsIjowLCJpc0RpeSI6dHJ1ZSwibG9naW5WaWEiOiJPdHAiLCJmaW5nZXJwcmludElkIjoiNDgzZmU1OGE3ZjJhMzE3NmRmYTBmMWRmZGI1NzRlMWI2YmIzMDkwMDFmN2ExMGQ1MDBmZmQ2MWVlYjlmZDA4NyIsImlhdCI6MTc1NTA5NzQ2MywiZXhwIjoxNzU1NzAyMjYzfQ.dRcvcq8bKq2Dcl0ReS_8whNyfP-sRuMEQ5k9NlCoPYGjehFxGh3KyhiGZONLskN9"
         pwtoken = "pwtoken"
     else:
         cwtoken = raw_text4
@@ -1468,11 +1468,42 @@ async def text_handler(bot: Client, m: Message):
                 url = mpd
                 keys_string = " ".join([f"--key {key}" for key in keys])
 
-            elif "classplusapp" in url:
-                signed_api = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={user_id}"
-                response = requests.get(signed_api, timeout=20)
-                #url = response.text.strip()
-                url = response.json()['url']  
+            elif "classplusapp" in url and url.endswith(".m3u8"):
+                try:
+                    headers = {
+                        'host': 'api.classplusapp.com',
+                        'x-access-token': cptoken,  # make sure cptoken is already defined earlier
+                        'accept-language': 'EN',
+                        'api-version': '18',
+                        'app-version': '1.4.73.2',
+                        'build-number': '35',
+                        'connection': 'Keep-Alive',
+                        'content-type': 'application/json',
+                        'device-details': 'Xiaomi_Redmi 7_SDK-32',
+                        'device-id': 'c28d3cb16bbdac01',
+                        'region': 'IN',
+                        'user-agent': 'Mobile-Android',
+                        'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c',
+                        'accept-encoding': 'gzip'
+                    }
+                    params = {"url": requests.utils.unquote(url)}
+            
+                    r = requests.get(
+                        'https://api.classplusapp.com/cams/uploader/video/jw-signed-url',
+                        headers=headers,
+                        params=params,
+                        timeout=20
+                    )
+                    r.raise_for_status()
+                    data = r.json()
+                    if "url" in data:
+                        url = data["url"]  # signed m3u8 URL
+                    else:
+                        await m.reply_text(f"⚠ No signed URL in API response for {url}")
+                        continue
+                except Exception as e:
+                    await m.reply_text(f"⚠ Error fetching signed Classplus URL: {e}")
+                    continue  
 
             elif "tencdn.classplusapp" in url:
                 headers = {'host': 'api.classplusapp.com', 'x-access-token': f'{raw_text4}', 'accept-language': 'EN', 'api-version': '18', 'app-version': '1.4.73.2', 'build-number': '35', 'connection': 'Keep-Alive', 'content-type': 'application/json', 'device-details': 'Xiaomi_Redmi 7_SDK-32', 'device-id': 'c28d3cb16bbdac01', 'region': 'IN', 'user-agent': 'Mobile-Android', 'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c', 'accept-encoding': 'gzip'}
