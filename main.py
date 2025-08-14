@@ -1490,13 +1490,15 @@ async def text_handler(bot: Client, m: Message):
                         elif "mpd" in data:
                             url = data["mpd"]
                         else:
-                            raise ValueError("JSON did not contain 'url' or 'mpd'")
+                            # JSON returned but didn't contain link info
+                            await m.reply_text(f"⚠ No valid signed link returned for {url}")
+                            continue  # skips to next link in the for-loop
                     except Exception:
-                        # Fallback: treat response body as the signed link
+                        # Fallback: treat response as raw signed link
                         url = response.text.strip()
                 except Exception as e:
                     await m.reply_text(f"⚠ Error fetching signed Classplus URL: {e}")
-                    continue  
+                    continue  # skips to next link  
 
             elif "tencdn.classplusapp" in url:
                 headers = {'host': 'api.classplusapp.com', 'x-access-token': f'{raw_text4}', 'accept-language': 'EN', 'api-version': '18', 'app-version': '1.4.73.2', 'build-number': '35', 'connection': 'Keep-Alive', 'content-type': 'application/json', 'device-details': 'Xiaomi_Redmi 7_SDK-32', 'device-id': 'c28d3cb16bbdac01', 'region': 'IN', 'user-agent': 'Mobile-Android', 'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c', 'accept-encoding': 'gzip'}
