@@ -38,6 +38,8 @@ import aiofiles
 import zipfile
 import shutil
 import ffmpeg
+import uuid
+import random
 
 # Initialize the bot
 bot = Client(
@@ -1095,8 +1097,16 @@ async def txt_handler(bot: Client, m: Message):
                 url = mpd
                 keys_string = " ".join([f"--key {key}" for key in keys])
 
+            
             elif "classplusapp" in url and url.endswith(".m3u8"):
                 try:
+                    # Generate random device headers
+                    device_id = str(uuid.uuid4())
+                    brands = ["Xiaomi", "Samsung", "OnePlus", "Realme", "Vivo"]
+                    models = ["Redmi7", "GalaxyA50", "7T", "Narzo20", "V15"]
+                    sdk_versions = ["30", "31", "32", "33", "34"]
+                    device_details = f"{random.choice(brands)}_{random.choice(models)}_SDK-{random.choice(sdk_versions)}"
+            
                     headers = {
                         'host': 'api.classplusapp.com',
                         'x-access-token': cptoken,  # make sure cptoken is already defined earlier
@@ -1106,15 +1116,16 @@ async def txt_handler(bot: Client, m: Message):
                         'build-number': '35',
                         'connection': 'Keep-Alive',
                         'content-type': 'application/json',
-                        'device-details': 'Xiaomi_Redmi 7_SDK-32',
-                        'device-id': 'c28d3cb16bbdac01',
+                        'device-details': device_details,
+                        'device-id': device_id,
                         'region': 'IN',
                         'user-agent': 'Mobile-Android',
                         'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c',
                         'accept-encoding': 'gzip'
                     }
+            
                     params = {"url": requests.utils.unquote(url)}
-
+            
                     r = requests.get(
                         'https://api.classplusapp.com/cams/uploader/video/jw-signed-url',
                         headers=headers,
@@ -1130,7 +1141,8 @@ async def txt_handler(bot: Client, m: Message):
                         continue
                 except Exception as e:
                     await m.reply_text(f"⚠ Error fetching signed Classplus URL: {e}")
-                    continue  
+                    continue
+  
                     
             elif "tencdn.classplusapp" in url:
                 headers = {'host': 'api.classplusapp.com', 'x-access-token': f'{cptoken}', 'accept-language': 'EN', 'api-version': '18', 'app-version': '1.4.73.2', 'build-number': '35', 'connection': 'Keep-Alive', 'content-type': 'application/json', 'device-details': 'Xiaomi_Redmi 7_SDK-32', 'device-id': 'c28d3cb16bbdac01', 'region': 'IN', 'user-agent': 'Mobile-Android', 'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c', 'accept-encoding': 'gzip'}
