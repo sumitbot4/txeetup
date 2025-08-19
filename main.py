@@ -491,7 +491,7 @@ async def start(bot, m: Message):
     caption = f"🌟 Welcome {m.from_user.mention} ! 🌟"
     start_message = await bot.send_photo(
         chat_id=m.chat.id,
-        photo="https://tinypic.host/images/2025/07/14/IMG_20250714_161041_194.jpg",
+        photo="https://positivethinking.tech/wp-content/uploads/2023/09/Blog_BOT-Model_Featured-Image-1-800x450.png",
         caption=caption
     )
 
@@ -674,7 +674,7 @@ async def upgrade_button(client, callback_query):
            f"• 🎓 Utkarsh Protection(Video + PDF)\n"
            f"• 🎓 All Non DRM+AES Encrypted URLs\n"
            f"• 🎓 MPD URLs if the key is known (e.g., Mpd_url?key=key XX:XX)</blockquote>\n\n"
-           f"<b>💵 Monthly Plan: 100 INR</b>\n\n"
+           f"<b>💵 Monthly Plan: 1000 INR</b>\n\n"
            f"If you want to buy membership of the bot, feel free to contact [{CREDIT}](tg://user?id={OWNER})\n"
     )  
     
