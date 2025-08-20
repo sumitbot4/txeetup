@@ -1140,14 +1140,31 @@ async def txt_handler(bot: Client, m: Message):
             else:
                 ytf = f"b[height<={raw_text2}]/bv[height<={raw_text2}]+ba/b/bv+ba"
            
+            # ===============================
+            # Build yt-dlp command
+            # ===============================
+            
             if "jw-prod" in url:
-                cmd = f'yt-dlp -o "{name}.mp4" "{url}"'
+                if 'keys_string' in locals() and keys_string:
+                    cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} -o "{name}.mp4" "{url}"'
+                else:
+                    cmd = f'yt-dlp -o "{name}.mp4" "{url}"'
+            
             elif "webvideos.classplusapp." in url:
-               cmd = f'yt-dlp --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
+                if 'keys_string' in locals() and keys_string:
+                    cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
+                else:
+                    cmd = f'yt-dlp --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
+            
             elif "youtube.com" in url or "youtu.be" in url:
-                cmd = f'yt-dlp --cookies youtube_cookies.txt -f "{ytf}" "{url}" -o "{name}".mp4'
+                cmd = f'yt-dlp --cookies youtube_cookies.txt -f "{ytf}" "{url}" -o "{name}.mp4"'
+            
             else:
-                cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
+                if 'keys_string' in locals() and keys_string:
+                    cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} -o "{name}.mp4" "{url}"'
+                else:
+                    cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
+
 
             try:
                 if raw_text5 == "yes":
@@ -1510,14 +1527,31 @@ async def text_handler(bot: Client, m: Message):
             else:
                 ytf = f"b[height<={raw_text2}]/bv[height<={raw_text2}]+ba/b/bv+ba"
            
+            # ===============================
+            # Build yt-dlp command
+            # ===============================
+            
             if "jw-prod" in url:
-                cmd = f'yt-dlp -o "{name}.mp4" "{url}"'
+                if 'keys_string' in locals() and keys_string:
+                    cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} -o "{name}.mp4" "{url}"'
+                else:
+                    cmd = f'yt-dlp -o "{name}.mp4" "{url}"'
+            
             elif "webvideos.classplusapp." in url:
-               cmd = f'yt-dlp --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
+                if 'keys_string' in locals() and keys_string:
+                    cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
+                else:
+                    cmd = f'yt-dlp --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
+            
             elif "youtube.com" in url or "youtu.be" in url:
-                cmd = f'yt-dlp --cookies youtube_cookies.txt -f "{ytf}" "{url}" -o "{name}".mp4'
+                cmd = f'yt-dlp --cookies youtube_cookies.txt -f "{ytf}" "{url}" -o "{name}.mp4"'
+            
             else:
-                cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
+                if 'keys_string' in locals() and keys_string:
+                    cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} -o "{name}.mp4" "{url}"'
+                else:
+                    cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
+
 
             try:
                 cc = f'🎞️ `{name} [{res}].mp4`\n<blockquote expandable>🔗𝐋𝐢𝐧𝐤 » {link}</blockquote>\n🌟𝐄𝐱𝐭𝐫𝐚𝐜𝐭𝐞𝐝 𝐁𝐲 » {CREDIT}'
