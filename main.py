@@ -1097,7 +1097,32 @@ async def txt_handler(bot: Client, m: Message):
                 url = mpd
                 keys_string = " ".join([f"--key {key}" for key in keys])
 
+            elif "tencdn.classplusapp" in url:
+                headers = {'host': 'api.classplusapp.com', 'x-access-token': f'{cptoken}', 'accept-language': 'EN', 'api-version': '18', 'app-version': '1.4.73.2', 'build-number': '35', 'connection': 'Keep-Alive', 'content-type': 'application/json', 'device-details': 'Xiaomi_Redmi 7_SDK-32', 'device-id': 'c28d3cb16bbdac01', 'region': 'IN', 'user-agent': 'Mobile-Android', 'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c', 'accept-encoding': 'gzip'}
+                params = {"url": f"{url}"}
+                response = requests.get('https://api.classplusapp.com/cams/uploader/video/jw-signed-url', headers=headers, params=params)
+                url = response.json()['url']  
+           
+            elif 'videos.classplusapp' in url:
+                url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': f'{cptoken}'}).json()['url']
             
+            elif 'media-cdn.classplusapp.com' in url or 'media-cdn-alisg.classplusapp.com' in url or 'media-cdn-a.classplusapp.com' in url: 
+                headers = {'host': 'api.classplusapp.com', 'x-access-token': f'{cptoken}', 'accept-language': 'EN', 'api-version': '18', 'app-version': '1.4.73.2', 'build-number': '35', 'connection': 'Keep-Alive', 'content-type': 'application/json', 'device-details': 'Xiaomi_Redmi 7_SDK-32', 'device-id': 'c28d3cb16bbdac01', 'region': 'IN', 'user-agent': 'Mobile-Android', 'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c', 'accept-encoding': 'gzip'}
+                params = {"url": f"{url}"}
+                response = requests.get('https://api.classplusapp.com/cams/uploader/video/jw-signed-url', headers=headers, params=params)
+                url   = response.json()['url']
+
+            elif "classplusapp.com/drm/wv" in url:
+            try:
+                # Call your Widevine key-extraction API
+                widevine_api = f"https://cpapi-ytas.onrender.com/extract_keys?url={url}&user_id={user_id}"
+                mpd, keys = helper.get_mps_and_keys(widevine_api)
+                url = mpd
+                keys_string = " ".join([f"--key {key}" for key in keys])
+            except Exception as e:
+                await m.reply_text(f"⚠ Widevine extract failed: {e}")
+                continue
+
             elif "classplusapp" in url and url.endswith(".m3u8"):
                 try:
                     headers = {
@@ -1176,13 +1201,22 @@ async def txt_handler(bot: Client, m: Message):
                 ytf = f"b[height<={raw_text2}]/bv[height<={raw_text2}]+ba/b/bv+ba"
            
             if "jw-prod" in url:
-                cmd = f'yt-dlp -o "{name}.mp4" "{url}"'
+                if 'keys_string' in locals() and keys_string:
+                    cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} -o "{name}.mp4" "{url}"'
+                else:
+                    cmd = f'yt-dlp -o "{name}.mp4" "{url}"'
+            
             elif "webvideos.classplusapp." in url:
-               cmd = f'yt-dlp --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
+                cmd = f'yt-dlp --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
+            
             elif "youtube.com" in url or "youtu.be" in url:
-                cmd = f'yt-dlp --cookies youtube_cookies.txt -f "{ytf}" "{url}" -o "{name}".mp4'
+                cmd = f'yt-dlp --cookies youtube_cookies.txt -f "{ytf}" "{url}" -o "{name}.mp4"'
+            
             else:
-                cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
+                if 'keys_string' in locals() and keys_string:
+                    cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} -o "{name}.mp4" "{url}"'
+                else:
+                    cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
 
             try:
                 if raw_text5 == "yes":
