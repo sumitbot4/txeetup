@@ -1086,6 +1086,18 @@ async def txt_handler(bot: Client, m: Message):
 
             if "acecwply" in url:
                 cmd = f'yt-dlp -o "{name}.%(ext)s" -f "bestvideo[height<={raw_text2}]+bestaudio" --hls-prefer-ffmpeg --no-keep-video --remux-video mkv --no-warning "{url}"'
+            elif "classplusapp.com/drm/wv" in url:
+                try:
+                    widevine_api = f"https://cpapi-ytas.onrender.com/extract_keys?url={url}@bots_updatee&user_id={user_id}"
+                    mpd, keys = helper.get_mps_and_keys(widevine_api)
+                    if not mpd or not keys:
+                        await m.reply_text("❌ Widevine extractor did not return keys")
+                        return
+                    url = mpd
+                    keys_string = " ".join([f"--key {key}" for key in keys])
+                except Exception as e:
+                    await m.reply_text(f"❌ Widevine extract failed: {e}")
+                    return
 
             elif "https://cpvod.testbook.com/" in url or "classplusapp.com/drm/" in url:
                 url = url.replace("https://cpvod.testbook.com/","https://media-cdn.classplusapp.com/drm/")
@@ -1155,7 +1167,10 @@ async def txt_handler(bot: Client, m: Message):
                     cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
                 else:
                     cmd = f'yt-dlp --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
-            
+                    
+            elif "classplusapp.com/drm/wv" in url:
+                cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} -o "{name}.mp4" "{url}"'
+
             elif "youtube.com" in url or "youtu.be" in url:
                 cmd = f'yt-dlp --cookies youtube_cookies.txt -f "{ytf}" "{url}" -o "{name}.mp4"'
             
@@ -1476,6 +1491,18 @@ async def text_handler(bot: Client, m: Message):
 
             if "acecwply" in url:
                 cmd = f'yt-dlp -o "{name}.%(ext)s" -f "bestvideo[height<={raw_text2}]+bestaudio" --hls-prefer-ffmpeg --no-keep-video --remux-video mkv --no-warning "{url}"'
+            elif "classplusapp.com/drm/wv" in url:
+                try:
+                    widevine_api = f"https://cpapi-ytas.onrender.com/extract_keys?url={url}@bots_updatee&user_id={user_id}"
+                    mpd, keys = helper.get_mps_and_keys(widevine_api)
+                    if not mpd or not keys:
+                        await m.reply_text("❌ Widevine extractor did not return keys")
+                        return
+                    url = mpd
+                    keys_string = " ".join([f"--key {key}" for key in keys])
+                except Exception as e:
+                    await m.reply_text(f"❌ Widevine extract failed: {e}")
+                    return
 
             elif "https://cpvod.testbook.com/" in url or "classplusapp.com/drm/" in url:
                 url = url.replace("https://cpvod.testbook.com/","https://media-cdn.classplusapp.com/drm/")
@@ -1542,7 +1569,9 @@ async def text_handler(bot: Client, m: Message):
                     cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
                 else:
                     cmd = f'yt-dlp --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
-            
+            elif "classplusapp.com/drm/wv" in url:
+                cmd = f'yt-dlp --allow-unplayable-formats --no-part {keys_string} -o "{name}.mp4" "{url}"'
+
             elif "youtube.com" in url or "youtu.be" in url:
                 cmd = f'yt-dlp --cookies youtube_cookies.txt -f "{ytf}" "{url}" -o "{name}.mp4"'
             
