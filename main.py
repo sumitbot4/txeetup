@@ -1088,16 +1088,17 @@ async def txt_handler(bot: Client, m: Message):
                 cmd = f'yt-dlp -o "{name}.%(ext)s" -f "bestvideo[height<={raw_text2}]+bestaudio" --hls-prefer-ffmpeg --no-keep-video --remux-video mkv --no-warning "{url}"'
             elif "classplusapp.com/drm/wv" in url:
                 try:
-                    widevine_api = f"https://cpapi-ytas.onrender.com/extract_keys?url={url}@bots_updatee&user_id={user_id}"
+                    widevine_api = f"https://scammer-keys.vercel.app/api?url={url}&token={cptoken}&auth=@scammer_botxz1"
                     mpd, keys = helper.get_mps_and_keys(widevine_api)
                     if not mpd or not keys:
-                        await m.reply_text("❌ Widevine extractor did not return keys")
+                        await m.reply_text("❌ Scammer API did not return keys")
                         return
                     url = mpd
                     keys_string = " ".join([f"--key {key}" for key in keys])
                 except Exception as e:
                     await m.reply_text(f"❌ Widevine extract failed: {e}")
                     return
+
 
             elif "https://cpvod.testbook.com/" in url or "classplusapp.com/drm/" in url:
                 url = url.replace("https://cpvod.testbook.com/","https://media-cdn.classplusapp.com/drm/")
@@ -1493,16 +1494,17 @@ async def text_handler(bot: Client, m: Message):
                 cmd = f'yt-dlp -o "{name}.%(ext)s" -f "bestvideo[height<={raw_text2}]+bestaudio" --hls-prefer-ffmpeg --no-keep-video --remux-video mkv --no-warning "{url}"'
             elif "classplusapp.com/drm/wv" in url:
                 try:
-                    widevine_api = f"https://cpapi-ytas.onrender.com/extract_keys?url={url}@bots_updatee&user_id={user_id}"
+                    widevine_api = f"https://scammer-keys.vercel.app/api?url={url}&token={cptoken}&auth=@scammer_botxz1"
                     mpd, keys = helper.get_mps_and_keys(widevine_api)
                     if not mpd or not keys:
-                        await m.reply_text("❌ Widevine extractor did not return keys")
+                        await m.reply_text("❌ Scammer API did not return keys")
                         return
                     url = mpd
                     keys_string = " ".join([f"--key {key}" for key in keys])
                 except Exception as e:
                     await m.reply_text(f"❌ Widevine extract failed: {e}")
                     return
+
 
             elif "https://cpvod.testbook.com/" in url or "classplusapp.com/drm/" in url:
                 url = url.replace("https://cpvod.testbook.com/","https://media-cdn.classplusapp.com/drm/")
