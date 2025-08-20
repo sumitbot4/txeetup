@@ -1113,15 +1113,15 @@ async def txt_handler(bot: Client, m: Message):
                 url   = response.json()['url']
 
             elif "classplusapp.com/drm/wv" in url:
-            try:
-                # Call your Widevine key-extraction API
-                widevine_api = f"https://cpapi-ytas.onrender.com/extract_keys?url={url}&user_id={user_id}"
-                mpd, keys = helper.get_mps_and_keys(widevine_api)
-                url = mpd
-                keys_string = " ".join([f"--key {key}" for key in keys])
-            except Exception as e:
-                await m.reply_text(f"⚠ Widevine extract failed: {e}")
-                continue
+                try:
+                    # Call your Widevine key-extraction API
+                    widevine_api = f"https://cpapi-ytas.onrender.com/extract_keys?url={url}&user_id={user_id}"
+                    mpd, keys = helper.get_mps_and_keys(widevine_api)
+                    url = mpd
+                    keys_string = " ".join([f"--key {key}" for key in keys])
+                except Exception as e:
+                    await m.reply_text(f"⚠ Widevine extract failed: {e}")
+                    continue
 
             elif "classplusapp" in url and url.endswith(".m3u8"):
                 try:
